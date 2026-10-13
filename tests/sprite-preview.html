@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="zh-Hant">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Universal Modder · P3 素材驗證</title>
+<style>
+  :root{color-scheme:dark;font-family:system-ui,sans-serif;background:#101826;color:#e4edf6}
+  body{max-width:960px;margin:40px auto;padding:0 20px}
+  h1{font-size:26px;margin-bottom:8px}p{color:#a4bbcd;line-height:1.6}
+  canvas{width:100%;height:auto;border:1px solid #42546c;border-radius:12px;background:#203244;image-rendering:pixelated}
+  .controls{display:flex;flex-wrap:wrap;gap:10px;margin:20px 0}
+  button{border:1px solid #52708a;border-radius:8px;padding:11px 16px;background:#20394e;color:#e4edf6;font-size:15px;cursor:pointer}
+  button:disabled{opacity:.4;cursor:default}button:focus-visible{outline:3px solid #7de4cf}
+  output{display:block;border:1px solid #42546c;border-radius:8px;padding:14px;color:#7de4cf;font-family:monospace}
+</style>
+<h1>Universal Modder · P3 素材驗證</h1>
+<p>同一張來源圖的透明 sprite 與像素化版本，從 2×2 sprite sheet 載入。使用按鈕切換外觀、左右移動與重設位置。</p>
+<canvas id="scene" width="896" height="384" aria-label="2D sprite 驗證場景"></canvas>
+<div class="controls">
+  <button id="left" disabled>向左</button><button id="right" disabled>向右</button>
+  <button id="style" disabled>切換像素版</button><button id="reset" disabled>重設</button>
+</div>
+<output id="result" aria-live="polite">正在載入 sprite sheet…</output>
+<script>
+const canvas=document.getElementById('scene'),ctx=canvas.getContext('2d',{willReadFrequently:true});
+const result=document.getElementById('result');
+const buttons=[...document.querySelectorAll('button')];
+const sheet=new Image();let x=384,facing=0,pixel=false,actions=0,loaded=false;
+function draw(){
+  ctx.imageSmoothingEnabled=false;
+  ctx.fillStyle='#192b3d';ctx.fillRect(0,0,896,384);
+  for(let y=0;y<320;y+=32)for(let gx=0;gx<896;gx+=32){ctx.fillStyle=((gx+y)/32)%2?'#20374a':'#233d50';ctx.fillRect(gx,y,32,32);}
+  ctx.fillStyle='#4b6970';ctx.fillRect(0,320,896,64);
+  ctx.fillStyle='#79b597';ctx.fillRect(0,320,896,5);
+  const frame=(pixel?2:0)+facing;
+  const cornerBefore=[...ctx.getImageData(x,192,1,1).data];
+  const centerBefore=[...ctx.getImageData(x+64,256,1,1).data];
+  ctx.drawImage(sheet,(frame%2)*64,Math.floor(frame/2)*64,64,64,x,192,128,128);
+  const cornerAfter=[...ctx.getImageData(x,192,1,1).data];
+  const centerAfter=[...ctx.getImageData(x+64,256,1,1).data];
+  const cornerPreserved=cornerBefore.every((v,i)=>v===cornerAfter[i]);
+  const spriteDrawn=centerBefore.some((v,i)=>v!==centerAfter[i]);
+  result.textContent=`${cornerPreserved&&spriteDrawn?'PASS':'FAIL'} · 已載入 128×128 sheet · frame=${frame} · x=${x} · actions=${actions} · transparent-corner=${cornerPreserved} · sprite-drawn=${spriteDrawn}`;
+}
+sheet.onload=()=>{
+  if(sheet.naturalWidth!==128||sheet.naturalHeight!==128){result.textContent='FAIL · sprite sheet 尺寸錯誤';return;}
+  loaded=true;buttons.forEach(b=>b.disabled=false);draw();
+};
+sheet.onerror=()=>result.textContent='FAIL · sprite sheet 無法載入';
+sheet.src='/sheet.png';
+document.getElementById('left').onclick=()=>{if(!loaded)return;x=Math.max(0,x-32);facing=1;actions++;draw();};
+document.getElementById('right').onclick=()=>{if(!loaded)return;x=Math.min(768,x+32);facing=0;actions++;draw();};
+document.getElementById('style').onclick=()=>{if(!loaded)return;pixel=!pixel;actions++;draw();};
+document.getElementById('reset').onclick=()=>{if(!loaded)return;x=384;facing=0;pixel=false;actions++;draw();};
+</script>
+</html>

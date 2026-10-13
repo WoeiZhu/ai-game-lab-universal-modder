@@ -39,6 +39,19 @@ $workflow.'3'.class_type = 'UnreviewedCloudNode'
 Assert-Rejected { Assert-LocalImageWorkflow $workflow }
 Assert-Rejected { Assert-LocalImageWorkflow ('{"nodes":[],"links":[]}' | ConvertFrom-Json) }
 Assert-Rejected { Assert-LocalImageWorkflow @() }
+$stats = @{ system = @{ ram_free = 8GB }; devices = @(@{ vram_free = 8GB }) }
+$queue = @{ queue_running = @(); queue_pending = @() }
+Assert-ImageResources $stats $queue
+$count++
+$stats.devices[0].vram_free = 1GB
+Assert-Rejected { Assert-ImageResources $stats $queue }
+$stats.devices[0].vram_free = 8GB
+$stats.system.ram_free = 1GB
+Assert-Rejected { Assert-ImageResources $stats $queue }
+$stats.system.ram_free = 8GB
+$queue.queue_pending = @('unrelated-job')
+Assert-Rejected { Assert-ImageResources $stats $queue }
+Assert-Rejected { Assert-ImageResources $stats $null }
 
 # Mock the connection endpoint. An accidental HTTP call uses this stub, not the network.
 $global:LabTestRequests = New-Object 'System.Collections.Generic.List[object]'
@@ -49,6 +62,8 @@ function Invoke-RestMethod {
 }
 function uv { throw 'Installer invoked during dry-run.' }
 & (Join-Path $root 'scripts/10-Install-UM.ps1')
+$count++
+& (Join-Path $root 'scripts/40-Test-Sprite.ps1')
 $count++
 & (Join-Path $root 'scripts/20-Test-ComfyUI.ps1')
 Assert-True ($global:LabTestRequests.Count -eq 1 -and $global:LabTestRequests[0].Method -eq 'Get' -and

@@ -36,6 +36,9 @@ if (-not $ExecuteWorkflow) {
     Write-Host 'Connection-only test complete. No workflow submitted.'
     return
 }
+$queue = Invoke-RestMethod -Uri "$base/queue" -Method Get -TimeoutSec 15 -MaximumRedirection 0
+Assert-ImageResources -Stats $info -Queue $queue
+# Queue and memory observations are a preflight snapshot, not a reservation.
 if (-not $OutDir) { $OutDir = Join-Path (Get-LabRoot) 'assets/concepts' }
 $snapshotDir = Join-Path (Get-LabRoot) 'reports/workflows'
 New-Item -ItemType Directory -Force -Path $snapshotDir | Out-Null

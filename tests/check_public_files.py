@@ -14,10 +14,13 @@ PUBLIC_FILES = {
     'docs/ARCHITECTURE.md', 'docs/COST_AND_RISKS.md', 'docs/TEST_PLAN.md',
     'docs/RESULT_TEMPLATE.md', 'docs/INITIALIZATION_AUDIT.md',
     'docs/LOCAL_TEST_RESULTS.md',
+    'docs/P3_TEST_RESULTS.md',
     'scripts/Common.ps1', 'scripts/00-Preflight.ps1', 'scripts/10-Install-UM.ps1',
     'scripts/20-Test-ComfyUI.ps1', 'scripts/30-Test-Blender.ps1',
+    'scripts/40-Test-Sprite.ps1',
     'tests/check_public_files.py', 'tests/test_public_check.py',
     'tests/Test-Repository.ps1',
+    'tests/validate_sprite_outputs.py', 'tests/sprite-preview.html', 'tests/serve_sprite_preview.py',
 }
 RULES = {
     'credential-prefix': re.compile(

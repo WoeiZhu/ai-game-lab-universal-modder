@@ -2,7 +2,7 @@
 
 Windows 本地 AI 遊戲開發的公開操作範本，整合 Universal Modder CLI、既有 ComfyUI 與 Blender。此專案與 [upstream](https://github.com/rehan-remade/universal-modder) 獨立；不包含 upstream 程式碼、模型、遊戲原檔或私人交接紀錄。
 
-2026-10-13 狀態：GitHub 初始化完成；**P0 盤點、P1 隔離 CLI 安裝及 P2 本地圖片 smoke test 通過**。H3／WanVideo 功能回歸及 P3–P7 尚未執行。詳見 [本地測試結果](docs/LOCAL_TEST_RESULTS.md)。
+2026-10-13 狀態：GitHub 初始化完成；**P0–P2 基本測試與 P3 sprite 處理／瀏覽器載入通過**。H3／WanVideo 功能回歸及 P4–P7 尚未執行。詳見 [P0–P2 結果](docs/LOCAL_TEST_RESULTS.md)與 [P3 結果](docs/P3_TEST_RESULTS.md)。
 
 ## 本次範圍
 
@@ -17,6 +17,7 @@ Windows 本地 AI 遊戲開發的公開操作範本，整合 Universal Modder CL
 - `scripts/10-Install-UM.ps1`：P1 安裝；預設 dry-run，需明確指定 `-Install`。
 - `scripts/20-Test-ComfyUI.ps1`：P2 本機連線；提交工作流需獨立開關、審查與 SHA256。
 - `scripts/30-Test-Blender.ps1`：選用版本查詢，不渲染。
+- `scripts/40-Test-Sprite.ps1`：P3 去背、縮放、鏡像、像素化、sheet 與切片驗證，預設 dry-run。
 - `config/.env.example`、`config/upstream.json`：空白設定與 upstream 基準。
 - `docs/TEST_PLAN.md`：P0–P7 計畫；`docs/RESULT_TEMPLATE.md`：公開結果範本。
 - `tests/`：不安裝工具、不接觸 ComfyUI 的儲存庫檢查。
@@ -46,7 +47,7 @@ $hash = (Get-FileHash -LiteralPath $workflow -Algorithm SHA256).Hash
 .\scripts\20-Test-ComfyUI.ps1 -WorkflowPath $workflow -WorkflowSha256 $hash -ExecuteWorkflow
 ```
 
-`COMFYUI_URL` 範例是 `http://127.0.0.1:8000`，本地 smoke test 已確認此端點可用。腳本只接受 HTTP 的數字 loopback 主機，拒絕憑證、查詢字串與路徑；不自動改 Port 或開放外網。
+`COMFYUI_URL` 範例是 `http://127.0.0.1:8000`，本地 smoke test 已確認此端點可用。腳本只接受 HTTP 的數字 loopback 主機，拒絕憑證、查詢字串與路徑；不自動改 Port 或開放外網。生圖前要求 queue 為空、單一 GPU 至少 4 GiB 可用顯存與 4 GiB 可用 RAM。
 
 安裝固定 `config/upstream.json` 的 commit，工具環境、bin 與 cache 都在本專案 `.local/uv/`。不改全域 PATH；後續使用 `.local/uv/bin/um.exe`。已驗證 Windows 安裝，實際依賴版本記錄在測試結果中；**transitive dependencies 仍未鎖定**，重新安裝時需重新驗證。
 

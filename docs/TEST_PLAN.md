@@ -1,6 +1,6 @@
 # P0–P7 分階段測試
 
-2026-10-13 已完成 P0 盤點、P1 CLI 安裝及 P2 連線／單張圖片 smoke test，見 [測試結果](LOCAL_TEST_RESULTS.md)。H3／WanVideo 功能回歸及 P3–P7 = **NOT_RUN**；儲存庫的靜態／模擬測試不屬於 P0 環境測試。
+2026-10-13 已完成 [P0–P2 基本測試](LOCAL_TEST_RESULTS.md)與 [P3 sprite 處理／瀏覽器載入](P3_TEST_RESULTS.md)。H3／WanVideo 功能回歸及 P4–P7 = **NOT_RUN**；儲存庫的靜態／模擬測試不屬於 P0 環境測試。
 
 | 階段 | 執行範圍 | 驗收證據 | 進入條件 |
 |---|---|---|---|

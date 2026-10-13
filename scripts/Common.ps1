@@ -73,3 +73,17 @@ function Assert-LocalImageWorkflow {
     }
     if (-not $hasSave) { throw 'Smoke workflow needs a SaveImage node.' }
 }
+
+function Assert-ImageResources {
+    param([object]$Stats, [object]$Queue)
+    if ($null -eq $Queue -or $null -eq $Queue.queue_running -or $null -eq $Queue.queue_pending) {
+        throw 'Unexpected queue response. No workflow submitted.'
+    }
+    if (@($Queue.queue_running).Count -gt 0 -or @($Queue.queue_pending).Count -gt 0) {
+        throw 'ComfyUI queue is not empty. No workflow submitted.'
+    }
+    $devices = @($Stats.devices)
+    if ($devices.Count -ne 1 -or $devices[0].vram_free -lt 4GB -or $Stats.system.ram_free -lt 4GB) {
+        throw 'Smoke test requires one verified GPU with at least 4 GiB free VRAM and 4 GiB free RAM. No workflow submitted.'
+    }
+}
