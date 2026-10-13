@@ -1,0 +1,40 @@
+# Credentials and machine-specific settings
+.env
+.env.*
+!.env.example
+local-config.*
+*.pem
+*.key
+credentials*.json
+
+# Private handoffs, imports, inventories and workflows
+handoff/
+inbox/
+github_staging/
+.private-import/
+reports/
+workflows/
+*.jsonl
+
+# Isolated runtime and generated content
+.local/
+.venv/
+__pycache__/
+*.pyc
+*.log
+assets/
+outputs/
+backups/
+*.safetensors
+*.ckpt
+*.pth
+*.pt
+*.gguf
+*.onnx
+*.zip
+*.7z
+*.exe
+*.dll
+*.pdb
+*.blend
+*.blend1
