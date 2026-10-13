@@ -2,11 +2,11 @@
 
 Windows 本地 AI 遊戲開發的公開操作範本，整合 Universal Modder CLI、既有 ComfyUI 與 Blender。此專案與 [upstream](https://github.com/rehan-remade/universal-modder) 獨立；不包含 upstream 程式碼、模型、遊戲原檔或私人交接紀錄。
 
-2026-10-13 狀態：GitHub 初始化；**本地 P0–P7 全部 NOT_RUN**。腳本的語法與隔離測試通過不代表環境部署完成。
+2026-10-13 狀態：GitHub 初始化完成；**P0 盤點、P1 隔離 CLI 安裝及 P2 本地圖片 smoke test 通過**。H3／WanVideo 功能回歸及 P3–P7 尚未執行。詳見 [本地測試結果](docs/LOCAL_TEST_RESULTS.md)。
 
 ## 本次範圍
 
-僅整理及提交文件、設定範例、安裝與測試腳本。未安裝 Universal Modder，未啟動或變更 ComfyUI、Torch、CUDA、Custom Nodes、MiniMax H3、WanVideo 或 Blender；未呼叫付費 API。
+初始化階段僅整理及提交文件、設定範例、安裝與測試腳本。後續依使用者授權完成 P0–P2 基本測試，安裝 Universal Modder 至專案專用環境，並以既有 ComfyUI 生成一張測試圖片。未更改既有程式、套件、設定、模型或工作流；未呼叫付費 API。
 
 公開儲存庫只放可重用範本。憑證、本機路徑、盤點報告、工作流、生成素材與私人交接留在本機或私人儲存空間，切勿推送。
 
@@ -21,7 +21,7 @@ Windows 本地 AI 遊戲開發的公開操作範本，整合 Universal Modder CL
 - `docs/TEST_PLAN.md`：P0–P7 計畫；`docs/RESULT_TEMPLATE.md`：公開結果範本。
 - `tests/`：不安裝工具、不接觸 ComfyUI 的儲存庫檢查。
 
-## 後續操作範例（本次不執行）
+## 操作範例（重新執行前須核對授權與狀態）
 
 先讀 [測試計畫](docs/TEST_PLAN.md)。在 PowerShell 5.1 或 7，以此儲存庫為工作目錄：
 
@@ -46,9 +46,9 @@ $hash = (Get-FileHash -LiteralPath $workflow -Algorithm SHA256).Hash
 .\scripts\20-Test-ComfyUI.ps1 -WorkflowPath $workflow -WorkflowSha256 $hash -ExecuteWorkflow
 ```
 
-`COMFYUI_URL` 範例是 `http://127.0.0.1:8000`，實際連線狀態尚未驗證。腳本只接受 HTTP 的數字 loopback 主機，拒絕憑證、查詢字串與路徑；不自動改 Port 或開放外網。
+`COMFYUI_URL` 範例是 `http://127.0.0.1:8000`，本地 smoke test 已確認此端點可用。腳本只接受 HTTP 的數字 loopback 主機，拒絕憑證、查詢字串與路徑；不自動改 Port 或開放外網。
 
-安裝固定 `config/upstream.json` 的 commit，工具環境、bin 與 cache 都在本專案 `.local/uv/`。不改全域 PATH；後續使用 `.local/uv/bin/um.exe`。依賴仍由 uv 解析，**尚未鎖定 transitive dependencies，也未驗證 Windows 安裝**。
+安裝固定 `config/upstream.json` 的 commit，工具環境、bin 與 cache 都在本專案 `.local/uv/`。不改全域 PATH；後續使用 `.local/uv/bin/um.exe`。已驗證 Windows 安裝，實際依賴版本記錄在測試結果中；**transitive dependencies 仍未鎖定**，重新安裝時需重新驗證。
 
 `.env.example` 僅供參考，腳本不自動載入 `.env`。ComfyUI 位置透過 P0 的 `-ProtectedEnvironmentPaths` 傳入，Blender 位置透過 `-BlenderExe` 傳入，勿填進公開文件。
 

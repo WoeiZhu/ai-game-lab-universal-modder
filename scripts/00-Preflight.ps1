@@ -12,7 +12,8 @@ $results = foreach ($tool in @('git', 'python', 'uv', 'codex', 'claude', 'ffmpeg
     $code = $null
     if ($cmd -and $QueryVersions) {
         try {
-            $output = & $cmd.Source --version 2>&1
+            $versionFlag = if ($tool -eq 'ffmpeg') { '-version' } else { '--version' }
+            $output = & $cmd.Source $versionFlag 2>&1
             $code = $LASTEXITCODE
             $version = ($output | Select-Object -First 1 | Out-String).Trim()
         } catch { $version = 'QUERY_FAILED'; $code = -1 }

@@ -2,7 +2,7 @@
 
 本專案是操作計畫與安全範本。先讀 README、docs/TEST_PLAN.md、Git 狀態與使用者當前授權；不要將準備完成當成已部署。
 
-- 目前只允許 GitHub 初始化與儲存庫檢查；本地 P0–P7 尚未授權執行。
+- 執行範圍以使用者當前授權為準；不得由 GitHub 初始化或先前測試通過推論未來安裝、生成、遊戲修改或發布已獲授權。
 - 不修改、升級、重裝或啟停既有 ComfyUI、Torch、CUDA、Custom Nodes、MiniMax H3、WanVideo、Blender。
 - P0 預設僅發現工具；查版本會啟動程式，須審查來源。盤點報告含電腦名稱與絕對路徑，禁止提交。
 - P1 必須有 P0 證據與使用者明確安裝授權；只使用專案專用 uv tool 環境，不能使用 ComfyUI Python venv。不能自行安裝 uv、Python 或其他缺失工具。

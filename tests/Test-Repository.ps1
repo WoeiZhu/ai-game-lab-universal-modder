@@ -65,4 +65,4 @@ try {
     }
 } finally { Remove-Item -LiteralPath $fixture -Force }
 Assert-True ($global:LabTestRequests.Count -eq 1) 'Unapproved workflow contacted the server.'
-Write-Host "PASS: $count parse/guard/mock checks. Local P0-P7 were not run."
+Write-Host "PASS: $count parse/guard/mock checks. This suite did not execute P0-P7."
